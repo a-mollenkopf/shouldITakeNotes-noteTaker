@@ -17,21 +17,38 @@ app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
-app.get("/api/notes", function (req, res) {
-    res.sendFile(path.join(__dirname, "/db/db.json"));
+app.get("/api/notes", (req, res) => {
+  fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", (err, data) => {
+      if (err) throw err;
+      res.json(JSON.parse(data));
+  });
 });
 
 
 app.post("/api/notes", function (req, res) {
-  let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
-  let newNote = req.body;
-  let noteId = (savedNotes.length).toString();
-  newNote.id = noteId;
-  savedNotes.push(newNote);
-  
-  fs.writeFileSync("/api/notes/:id", JSON.stringify(savedNotes));
-  console.log("Note saved!", newNote);
-  res.json(savedNotes);
+  fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", (err, data) => {
+    if (err) throw err;
+    const note = JSON.parse(data);
+    const newDB = [];
+
+    note.push(req.body);
+
+    for (let i = 0; i < note.length; i++)
+    {
+        const newNote = {
+            title: note[i].title,
+            text: note[i].text,
+            id: i
+        };
+
+        newDB.push(newNote);
+    }
+
+    fs.writeFile(path.join(__dirname, "/db/db.json"), JSON.stringify(newDB, null, 2), (err) => {
+        if (err) throw err;
+        res.json(req.body);
+    });
+});
 });
 
 app.delete("/api/notes/:id", function (req, res) {
@@ -41,6 +58,3 @@ app.delete("/api/notes/:id", function (req, res) {
 app.listen(PORT, function() {
     console.log(`App listening on http://localhost:${PORT}`);
 })
-
-// app.use("/",express.static(path.join(__dirname, "public")))
-// app.use(express.static('public'));
