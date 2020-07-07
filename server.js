@@ -5,7 +5,7 @@ const fs = require("fs");
 const app = express();
 const PORT = 8080;
 
-app.use(express.static('public'));
+app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -18,43 +18,38 @@ app.get("*", function (req, res) {
 });
 
 app.get("/api/notes", (req, res) => {
-  fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", (err, data) => {
-      if (err) throw err;
-      res.json(JSON.parse(data));
+  fs.readFile("db/db.json", "utf8", (err, data) => {
+    if (err) {
+      return res.send("An error occurred reading your data.");
+    }
+    const arrayOfNotes = JSON.parse(data);
+    res.json(arrayOfNotes);
   });
 });
 
 
 app.post("/api/notes", function (req, res) {
-  fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", (err, data) => {
-    if (err) throw err;
-    const note = JSON.parse(data);
-    const newDB = [];
-
-    note.push(req.body);
-
-    for (let i = 0; i < note.length; i++)
-    {
-        const newNote = {
-            title: note[i].title,
-            text: note[i].text,
-            id: i
-        };
-
-        newDB.push(newNote);
+  fs.readFile("/db/db.json", "utf8", (err, data) => {
+    if (err) {
+      return res.send("An error occured retrieving the data.")
     }
+    const arrayOfNotes = JSON.parse(data);
+    const newNote = {...req.body, id: arrayOfNotes.length + 1};
+    arrayOfNotes.push(newNote);
 
-    fs.writeFile(path.join(__dirname, "/db/db.json"), JSON.stringify(newDB, null, 2), (err) => {
-        if (err) throw err;
-        res.json(req.body);
+    fs.writeFile("db/db.json", JSON.stringify(arrayOfNotes), "utf8", function(err) {
+      if (err) {
+        return res.send("An error ocurred writing your data.");
+      }
     });
+    res.json(arrayOfNotes);
+  });
 });
+
+// app.delete("/api/notes/:id", function (req, res) {
+  
+// });
+
+app.listen(PORT, function () {
+  console.log(`App listening on http://localhost:${PORT}`);
 });
-
-app.delete("/api/notes/:id", function (req, res) {
-
-})
-
-app.listen(PORT, function() {
-    console.log(`App listening on http://localhost:${PORT}`);
-})
