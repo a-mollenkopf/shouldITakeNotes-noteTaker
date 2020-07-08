@@ -34,6 +34,7 @@ app.post("/api/notes", function (req, res) {
       return res.send("An error occured retrieving the data.")
     }
     const arrayOfNotes = JSON.parse(data);
+    const newDB = [];
     const newNote = {...req.body, id: arrayOfNotes.length + 1};
     arrayOfNotes.push(newNote);
 
@@ -42,7 +43,7 @@ app.post("/api/notes", function (req, res) {
         return res.send("An error ocurred writing your data.");
       }
     });
-    res.json(arrayOfNotes);
+    res.json(newDB);
   });
 });
 
