@@ -29,13 +29,13 @@ This project tested my knowledge of servers and how to correctly path code so th
 [Note taker use]
 
 
-![](assets/note-taker-1.png)
+[](assets/note-taker-1.png)
 
 
-![](assets/note-taker-2.png)
+[](assets/note-taker-2.png)
 
 
-![](assets/note-taker-3.png)
+[](assets/note-taker-3.png)
 
 
 
