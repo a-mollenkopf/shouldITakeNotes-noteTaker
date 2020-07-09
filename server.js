@@ -2,15 +2,12 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 
-
 const app = express();
 const PORT = process.env.PORT || 8080;
-
 
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
 
 app.get("/notes", function (req, res) {
   res.sendFile(path.join(__dirname, "/public/notes.html"));
@@ -50,11 +47,32 @@ app.get("*", function (req, res) {
 });
 
 app.delete("/api/notes/:id", function (req, res) {
+  const id = parseInt(req.params.id);
+    fs.readFile(path.join(__dirname, "/db/db.json"), "utf8", (err, data) => {
+        if (err) throw err;
+        const note = JSON.parse(data);
+        const newDB = [];
 
+        for(let i = 0; i < note.length; i++)
+        {
+            if (i !== id)
+            {
+                const newNote = {
+                    title: note[i].title,
+                    text: note[i].text,
+                    id: newDB.length
+                };
+
+                newDB.push(newNote);
+            }
+        }
+
+        fs.writeFile(path.join(__dirname, "/db/db.json"), JSON.stringify(newDB, null, 2), (err) => {
+            if (err) throw err;
+            res.json(req.body);
+        });
+    });
 });
-
-
-
 
 app.listen(PORT, function () {
   console.log(`App listening on http://localhost:${PORT}`);
