@@ -48,9 +48,14 @@ app.post("/api/notes", function (req, res) {
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "/public/index.html"));
 });
-// app.delete("/api/notes/:id", function (req, res) {
 
-// });
+app.delete("/api/notes/:id", function (req, res) {
+
+});
+
+
+
+
 app.listen(PORT, function () {
   console.log(`App listening on http://localhost:${PORT}`);
 });

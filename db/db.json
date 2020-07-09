@@ -1,4 +1,4 @@
-{"notes":[
+[
   {
     "title": "Test Title",
     "text": "Test text",
@@ -103,5 +103,10 @@
     "title": "etg",
     "text": "tht",
     "id": 20
+  },
+  {
+    "title": "It works!",
+    "text": "it really works!",
+    "id": 21
   }
-]}
+]
